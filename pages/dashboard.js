@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react"
 const DashboardPage = ({session}) => {
     const [countAlbum, setCountAlbum] = useState(null);
     const [countListening, setCountListening] = useState(null);
-    const apiURL = 'http://localhost:1337'
+    const apiURL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
     
     if(session) {
