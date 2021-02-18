@@ -44,7 +44,7 @@ export const getServerSideProps = async ({ req }) => {
   const resListening = await fetch(apiURL+'/listenings/count', requestOptions);
   const countListening = await resListening.json();
 
-  const res = await fetch(apiURL+'/albums?year=2001', requestOptions);
+  const res = await fetch(apiURL+'/albums?year=2021', requestOptions);
   const listenings = await res.json();
 
   return {
