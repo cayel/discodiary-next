@@ -3,6 +3,7 @@ import { getSession } from "next-auth/client";
 import React from "react"
 import AlbumRanking from '../components/AlbumRanking';
 import CardValue from '../components/CardValue';
+import Link from 'next/link'
 
 const DashboardPage = ({session, countAlbum, countListening, listenings}) => {    
     if(session) {        
@@ -14,6 +15,13 @@ const DashboardPage = ({session, countAlbum, countListening, listenings}) => {
                 </div>
                 <div class="w-full md:w-1/2 xl:w-1/3 p-6">
                   <CardValue label="Listenings" value= {countListening}/>
+                </div>
+                <div class="w-full md:w-1/2 xl:w-1/3 p-6">
+                <button class="h-10 px-6 m-2 text-lg text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">
+                <Link href="/create-listening">
+                    <a>Create Listening</a>
+                  </Link>                  
+                </button>
                 </div>
             </div>        
             <AlbumRanking listenings={listenings} />
