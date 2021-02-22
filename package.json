@@ -20,6 +20,7 @@
     "postcss-cli": "^8.3.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-hook-form": "^6.15.3",
     "tailwindcss": "^2.0.3"
   }
 }

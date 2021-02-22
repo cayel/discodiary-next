@@ -31,7 +31,7 @@ async function saveListening(date, discogsId, score, token) {
         try {
             await axios.post(`${apiURL}/albums`, payloadAlbum, config);      
         } catch (error) {
-            console.log('error save album');
+            //console.log('error save album');
         }      
     }
 
@@ -46,7 +46,8 @@ async function saveListening(date, discogsId, score, token) {
     return payloadResult;
 }
 
-export default function handler(req, res) {
-    const result = saveListening(req.body.date, req.body.discogsId, req.body.score, req.body.token);
+export default async function handler(req, res) {
+    const result = await saveListening(req.body.date, req.body.discogsId, req.body.score, req.body.token);
+    //console.log(result);
     res.status(200).json(result);
 }
