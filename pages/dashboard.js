@@ -24,7 +24,7 @@ const DashboardPage = ({session, countAlbum, countListening, listenings}) => {
                 </button>
                 </div>
             </div>        
-            <AlbumRanking listenings={listenings} />
+            <AlbumRanking listenings={listenings} size="5" />
         </Layout>
       }
       return <Layout>

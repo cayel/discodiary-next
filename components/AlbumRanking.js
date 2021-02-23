@@ -1,5 +1,5 @@
 
-function orderAlbums (albums) {
+function orderAlbums (albums, size) {
   albums.forEach(album => {
     album.score = 0
     album.value = 0
@@ -19,11 +19,11 @@ function orderAlbums (albums) {
     album.position = position++;
   })
 
-  return albums;
+  return albums.slice(0,size);
 }
 
-const AlbumRanking = ({ listenings }) => {
-  const list = orderAlbums(listenings);
+const AlbumRanking = ({ listenings, size }) => {
+  const list = orderAlbums(listenings, size);
   
   return (
     <div class="w-full md:w-1/2 xl:w-1/2 p-6">
