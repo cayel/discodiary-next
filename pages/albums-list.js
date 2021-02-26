@@ -36,7 +36,7 @@ export async function getServerSideProps(context) {
     headers: myHeaders,
     redirect: 'follow'
   };  
-  const res = await fetch(apiURL+'/albums/', requestOptions);
+  const res = await fetch(apiURL+'/albums?_limit=-1', requestOptions);
 
   const albums = await res.json()
   return {

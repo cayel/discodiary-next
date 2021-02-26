@@ -26,9 +26,6 @@ const DashboardPage = ({session, countAlbum, countListening, listenings, allList
             </div>        
             <AlbumRanking listenings={listenings} size="5" year="2021"/>
             <AlbumRanking listenings={allListenings} size="5" year="0"/>
-            <Link href='/albums-list?year=2021'>
-            <a>Test</a>
-            </Link>
         </Layout>
       }      
       return <Layout>
@@ -56,10 +53,10 @@ export const getServerSideProps = async ({ req }) => {
   const resListening = await fetch(apiURL+'/listenings/count', requestOptions);
   const countListening = await resListening.json();
 
-  const res = await fetch(apiURL+'/albums?year=2021', requestOptions);
+  const res = await fetch(apiURL+'/albums?year=2021&_limit=-1', requestOptions);
   const listenings = await res.json();
 
-  const resAllListenings = await fetch(apiURL+'/albums', requestOptions);
+  const resAllListenings = await fetch(apiURL+'/albums?_limit=-1', requestOptions);
   const allListenings = await resAllListenings.json();
 
   return {
