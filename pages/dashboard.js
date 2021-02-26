@@ -37,28 +37,34 @@ const DashboardPage = ({session, countAlbum, countListening, listenings, allList
 export const getServerSideProps = async ({ req }) => {
   const apiURL = `${process.env.NEXT_PUBLIC_API_URL}`;
   const session = await getSession({ req });
+  var resAlbum;
+  var countAlbum = 0;
+  var countListening = 0;
+  var listenings = {};
+  var allListenings = {};
 
-  var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer "+session.jwt);
-  
-  var requestOptions = {
-    method: 'GET',
-    headers: myHeaders,
-    redirect: 'follow'
-  };
+  if (session ) {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer "+session.jwt);
+    
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
 
-  const resAlbum = await fetch(apiURL+'/albums/count', requestOptions);
-  const countAlbum = await resAlbum.json();
+    const resAlbum = await fetch(apiURL+'/albums/count', requestOptions);
+    countAlbum = await resAlbum.json();
 
-  const resListening = await fetch(apiURL+'/listenings/count', requestOptions);
-  const countListening = await resListening.json();
+    const resListening = await fetch(apiURL+'/listenings/count', requestOptions);
+    countListening = await resListening.json();
 
-  const res = await fetch(apiURL+'/albums?year=2021&_limit=-1', requestOptions);
-  const listenings = await res.json();
+    const res = await fetch(apiURL+'/albums?year=2021&_limit=-1', requestOptions);
+    listenings = await res.json();
 
-  const resAllListenings = await fetch(apiURL+'/albums?_limit=-1', requestOptions);
-  const allListenings = await resAllListenings.json();
-
+    const resAllListenings = await fetch(apiURL+'/albums?_limit=-1', requestOptions);
+    allListenings = await resAllListenings.json();
+  }
   return {
     props: {
       session,
