@@ -27,20 +27,28 @@ function orderAlbums(albums, size) {
   }  
 }
 
-const AlbumRanking = ({ listenings, size }) => {
+const AlbumRanking = ({ listenings, size, year }) => {
   const list = orderAlbums(listenings, size);
+  const linkTop = '/albums-list?year='+year;
+  
+  var title = '';
+  if (year == 0) {
+    title = 'Best Ever !';
+  } else {
+    title = 'Top '+year;
+  }
 
   return (
     <div class="w-full md:w-1/2 xl:w-1/2 p-6">
       <div class="border-b p-3">
         <h5 class="font-bold text-black">
           {size>0 &&
-          <Link href="/top2021">
-            <a>Top 2021</a>
+          <Link href={linkTop}>
+            <a>{title}</a>
           </Link>
           }
           {size==0 &&
-            <a>Top 2021</a>
+            <a>{title}</a>
           }
         </h5>
       </div>

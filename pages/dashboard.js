@@ -5,7 +5,7 @@ import AlbumRanking from '../components/AlbumRanking';
 import CardValue from '../components/CardValue';
 import Link from 'next/link'
 
-const DashboardPage = ({session, countAlbum, countListening, listenings}) => {    
+const DashboardPage = ({session, countAlbum, countListening, listenings, allListenings}) => {    
     if(session) {        
         return <Layout>    
           Signed in as {session.user.email} <br/>
@@ -24,9 +24,13 @@ const DashboardPage = ({session, countAlbum, countListening, listenings}) => {
                 </button>
                 </div>
             </div>        
-            <AlbumRanking listenings={listenings} size="5" />
+            <AlbumRanking listenings={listenings} size="5" year="2021"/>
+            <AlbumRanking listenings={allListenings} size="5" year="0"/>
+            <Link href='/albums-list?year=2021'>
+            <a>Test</a>
+            </Link>
         </Layout>
-      }
+      }      
       return <Layout>
         <div className="text">You aren't authorized to view this page</div>
       </Layout>      
@@ -55,12 +59,16 @@ export const getServerSideProps = async ({ req }) => {
   const res = await fetch(apiURL+'/albums?year=2021', requestOptions);
   const listenings = await res.json();
 
+  const resAllListenings = await fetch(apiURL+'/albums', requestOptions);
+  const allListenings = await resAllListenings.json();
+
   return {
     props: {
       session,
       countAlbum,
       countListening,
-      listenings
+      listenings,
+      allListenings    
     },
   };
 };
