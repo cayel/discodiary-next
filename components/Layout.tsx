@@ -1,7 +1,7 @@
 import { Navbar } from './Navbar';
 
 
-const  Layout= (props) =>  (
+const  Layout= (props : any) =>  (
   <div>
   <Navbar />
     {props.children}
