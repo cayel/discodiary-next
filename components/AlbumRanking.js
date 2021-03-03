@@ -1,7 +1,8 @@
 import Link from "next/link";
 
 function orderAlbums(albums, size) {
-  albums.forEach((album) => {
+  for (var i = 0, len = albums.length; i < len; i++) {
+    var album = albums[i];
     album.score = 0;
     album.value = 0;
     for (let i = 0; i < album.listenings.length; i++) {
@@ -9,22 +10,27 @@ function orderAlbums(albums, size) {
     }
     album.score = album.score / album.listenings.length;
     album.value = album.score + 0.01 * album.listenings.length;
-  });
+  }
 
-  albums.sort(function (a, b) {
-    return b.value - a.value;
-  });
+  if (albums.length > 0 ) {
+    albums.sort(function (a, b) {
+      return b.value - a.value;
+    });  
+  }
 
   var position = 1;
-  albums.forEach((album) => {
+  for (var i = 0, len = albums.length; i < len; i++) {
+    var album = albums[i];
     album.position = position++;
-  });
+  };
 
   if (size == 0) {
     return albums;
   } else {
-    return albums.slice(0, size);
-  }  
+    if (albums.length > 0 ) {
+      return albums.slice(0, size);
+    } else return [];
+  }
 }
 
 const AlbumRanking = ({ listenings, size, year }) => {
