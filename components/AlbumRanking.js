@@ -38,6 +38,11 @@ function getColumns() {
       name: 'Score',
       selector: 'score',
       sortable: true
+    },
+    {
+      name: 'Listenings',
+      selector: 'listened',
+      sortable: true
     }
   ]);
 }
@@ -52,6 +57,7 @@ function orderAlbums(albums, size) {
     }
     album.score = album.score / album.listenings.length;
     album.value = album.score + 0.01 * album.listenings.length;
+    album.listened = album.listenings.length;
   }
 
   if (albums.length > 0 ) {
