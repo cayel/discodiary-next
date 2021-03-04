@@ -5,39 +5,66 @@ import CardValue from "../components/CardValue";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 
-const DashboardPage = ({session}) => {
-  const [dashboardData, setDashboardData] = useState({ countAlbum: null, countListening: null, listenings2021:[], allListenings:[] });
-  const apiURL = `${process.env.NEXT_PUBLIC_API_URL}`;
+function useFetch(url, session) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  async function fetchUrl() {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + session.jwt);
 
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+    const response = await fetch(url, requestOptions);
+    const json = await response.json();
+    setData(json);
+    setLoading(false);
+  }
   useEffect(() => {
-    async function anyNameFunction() {
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + session.jwt);
-
-      var requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
-      };
-      const resAlbum = await fetch(apiURL + "/albums/count", requestOptions);
-      const resListening = await fetch(apiURL + "/listenings/count",requestOptions);
-      const res2021 = await fetch(apiURL + "/albums?year=2021&_limit=-1",requestOptions);
-      const resAllListenings = await fetch(apiURL + "/albums?_limit=-1",requestOptions);
-    
-      setDashboardData({countAlbum : await resAlbum.json(), countListening: await resListening.json(), listenings2021 :await res2021.json(), allListenings: await resAllListenings.json()});
-    }
-    anyNameFunction();
+    fetchUrl();
   }, []);
+  return [data, loading];
+}
+
+const DashboardPage = ({ session }) => {
+  const apiURL = `${process.env.NEXT_PUBLIC_API_URL}`;
+  const [countAlbum, loadingCountAlbum] = useFetch(
+    apiURL + "/albums/count",
+    session
+  );
+  const [countListening, loadingCountListening] = useFetch(
+    apiURL + "/listenings/count",
+    session
+  );
+  const [listenings2021, loadingListenings2021] = useFetch(
+    apiURL + "/albums?year=2021&_limit=-1",
+    session
+  );
+  const [allListenings, loadingAllListenings] = useFetch(
+    apiURL + "/albums?_limit=-1",
+    session
+  );
+
   if (session) {
     return (
       <Layout>
         Signed in as {session.user.email} <br />
         <div class="flex flex-wrap">
           <div class="w-full md:w-1/2 xl:w-1/3 p-6">
-            <CardValue label="Albums" value={dashboardData.countAlbum} />
+            {loadingCountAlbum ? (
+              "Loading..."
+            ) : (
+              <CardValue label="Albums" value={countAlbum} />
+            )}
           </div>
           <div class="w-full md:w-1/2 xl:w-1/3 p-6">
-            <CardValue label="Listenings" value={dashboardData.countListening} />
+            {loadingCountListening ? (
+              "Loading..."
+            ) : (
+              <CardValue label="Listenings" value={countListening} />
+            )}
           </div>
 
           <div class="w-full md:w-1/2 xl:w-1/3 p-6">
@@ -48,8 +75,16 @@ const DashboardPage = ({session}) => {
             </button>
           </div>
         </div>
-        <AlbumRanking listenings={dashboardData.listenings2021} size="5" year="2021" />
-        <AlbumRanking listenings={dashboardData.allListenings} size="5" year="0" />
+        {loadingListenings2021 ? (
+          "Loading..."
+        ) : (
+          <AlbumRanking listenings={listenings2021} size="5" year="2021" />
+        )}
+        {loadingAllListenings ? (
+          "Loading..."
+        ) : (
+          <AlbumRanking listenings={allListenings} size="5" year="0" />
+        )}
       </Layout>
     );
   }
@@ -62,7 +97,6 @@ const DashboardPage = ({session}) => {
 
 export const getServerSideProps = async ({ req }) => {
   const session = await getSession({ req });
-
   return {
     props: {
       session,
