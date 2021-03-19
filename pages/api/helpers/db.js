@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb"
 
-const { NEXT_PUBLIC_DATABASE_URL, MONGO_DB } = process.env
+const { NEXT_PUBLIC_DATABASE_URL } = process.env
 
 if (!NEXT_PUBLIC_DATABASE_URL) {
   throw new Error(
