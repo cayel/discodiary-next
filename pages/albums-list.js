@@ -2,20 +2,35 @@ import Layout from '../components/Layout';
 import AlbumRanking from '../components/AlbumRanking';
 import { getSession } from 'next-auth/client'
 import { useRouter } from 'next/router'
+import React, { useState, useEffect } from "react";
 
-function AlbumList({session, albums}) {
+function useFetch(url) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  async function fetchUrl() {
+    const response = await fetch(url);
+    const json = await response.json();
+    setData(json);
+    setLoading(false);
+  }
+  useEffect(() => {
+    fetchUrl();
+  }, []);
+  return [data, loading];
+}
+
+function AlbumList({session}) {
   if(session) {        
     const router = useRouter()
     const { year } = router.query ;
-    var albumsList
-    if ( year != 0) {
-      albumsList = albums.filter( element => element.year == year);
-    } else {
-      albumsList = albums;
-    }
+    const [albums, loadingAlbums] = useFetch("/api/statistics?year="+year+"&sortByScore=-1&sortByListenings=-1");
     return (
       <Layout>
-        <AlbumRanking listenings={albumsList} size="0" year={year}/>
+        {loadingAlbums ? (
+          "Loading..."
+        ) : (
+          <AlbumRanking listenings={albums} size="0" year={year}/>
+        )}
       </Layout>
     )
   }
@@ -25,24 +40,11 @@ function AlbumList({session, albums}) {
 }
 
 export async function getServerSideProps(context) {
-  const apiURL = `${process.env.NEXT_PUBLIC_API_URL}`;
   const session = await getSession(context)
 
-  var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer "+session.jwt);
-  
-  var requestOptions = {
-    method: 'GET',
-    headers: myHeaders,
-    redirect: 'follow'
-  };  
-  const res = await fetch(apiURL+'/albums?_limit=-1', requestOptions);
-
-  const albums = await res.json()
   return {
     props: { 
-      session,
-      albums,
+      session
     }
   }
 }

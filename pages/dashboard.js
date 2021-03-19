@@ -5,7 +5,7 @@ import CardValue from "../components/CardValue";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 
-function useFetch(url, session) {
+function useStrapiFetch(url, session) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   async function fetchUrl() {
@@ -28,22 +28,41 @@ function useFetch(url, session) {
   return [data, loading];
 }
 
+function useFetch(url) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  async function fetchUrl() {
+    const response = await fetch(url);
+    const json = await response.json();
+    setData(json);
+    setLoading(false);
+  }
+  useEffect(() => {
+    fetchUrl();
+  }, []);
+  return [data, loading];
+}
+
 const DashboardPage = ({ session }) => {
   const apiURL = `${process.env.NEXT_PUBLIC_API_URL}`;
-  const [countAlbum, loadingCountAlbum] = useFetch(
+  const [countAlbum, loadingCountAlbum] = useStrapiFetch(
     apiURL + "/albums/count",
     session
   );
-  const [countListening, loadingCountListening] = useFetch(
+  const [countListening, loadingCountListening] = useStrapiFetch(
     apiURL + "/listenings/count",
     session
   );
-  const [listenings2021, loadingListenings2021] = useFetch(
+  const [strapi_listenings2021, strapi_loadingListenings2021] = useStrapiFetch(
     apiURL + "/albums?year=2021&_limit=-1",
     session
   );
+  const [listenings2021, loadingListenings2021] = useFetch(
+    "/api/statistics?year=2021&sortByScore=-1&sortByListenings=-1",
+    session
+  );
   const [allListenings, loadingAllListenings] = useFetch(
-    apiURL + "/albums?_limit=-1",
+    "/api/statistics?sortByScore=-1&sortByListenings=-1",
     session
   );
 
@@ -79,7 +98,7 @@ const DashboardPage = ({ session }) => {
           "Loading..."
         ) : (
           <AlbumRanking listenings={listenings2021} size="5" year="2021" />
-        )}
+        )}        
         {loadingAllListenings ? (
           "Loading..."
         ) : (

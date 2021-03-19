@@ -9,14 +9,6 @@ function getTitle (year) {
   }
 }
 
-function getTitleLink (title, linkTop, size) {
-  if (size === 0) {
-    return <Link href={linkTop}><a>{title}</a></Link>;
-  } else {
-    {title}
-  }
-}
-
 function getColumns() {
   return ([
     {
@@ -36,36 +28,18 @@ function getColumns() {
     },
     {
       name: 'Score',
-      selector: 'score',
+      selector: 'avgScore',
       sortable: true
     },
     {
       name: 'Listenings',
-      selector: 'listened',
+      selector: 'numOfListenings',
       sortable: true
     }
   ]);
 }
 
 function orderAlbums(albums, size) {
-  for (var i = 0, len = albums.length; i < len; i++) {
-    var album = albums[i];
-    album.score = 0;
-    album.value = 0;
-    for (let i = 0; i < album.listenings.length; i++) {
-      album.score = album.score + album.listenings[i].score;
-    }
-    album.score = album.score / album.listenings.length;
-    album.value = album.score + 0.01 * album.listenings.length;
-    album.listened = album.listenings.length;
-  }
-
-  if (albums.length > 0 ) {
-    albums.sort(function (a, b) {
-      return b.value - a.value;
-    });  
-  }
-
   var position = 1;
   for (var i = 0, len = albums.length; i < len; i++) {
     var album = albums[i];
@@ -82,7 +56,7 @@ function orderAlbums(albums, size) {
 }
 
 const AlbumRanking = ({ listenings, size, year }) => {
-  const list = orderAlbums(listenings, size);
+  const list = orderAlbums(listenings.albums, size);
   const linkTop = '/albums-list?year='+year;
   const columns = getColumns();
   const title = getTitle(year);
